@@ -1,0 +1,6 @@
+dep_id,dep_name,total_employees,total_net_pay,avg_net_salary,total_overtime,total_absents
+1,HR,2,57222.67,28611.335000,15,10
+3,IT,1,28040.00,28040.000000,18,7
+5,Operations,2,25856.00,12928.000000,9,5
+2,Finance,1,24790.00,24790.000000,6,8
+4,Marketing,1,23029.00,23029.000000,5,8
