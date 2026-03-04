@@ -8,14 +8,14 @@ This project combines **web development and data analytics** to transform raw at
 
 # 🚀 Features
 
-### 👤 Employee Module
+## 👤 Employee Module
 - Employee login using **Employee ID**
 - Mark attendance (Present / Half Day / Work From Home / Absent)
 - Automatic **late penalty detection**
 - View attendance history
 - Track attendance statistics
 
-### 🧑‍💼 Manager Module
+## 🧑‍💼 Manager Module
 - Manager login with **secure PIN**
 - Add, update, and delete employees
 - Monitor daily attendance
@@ -23,7 +23,7 @@ This project combines **web development and data analytics** to transform raw at
 - Generate **automated payroll**
 - View and download **payment slips**
 
-### 📊 Data Analytics
+## 📊 Data Analytics
 - Attendance trend analysis
 - Department-wise workforce insights
 - Employee performance analytics
@@ -36,22 +36,14 @@ This project combines **web development and data analytics** to transform raw at
 ## 🔐 Login Page
 ![Login Page](screenshots/login.png)
 
----
-
 ## 👤 Employee Dashboard
 ![Employee Dashboard](screenshots/employee.png)
-
----
 
 ## 🧑‍💼 Admin Dashboard
 ![Admin Dashboard](screenshots/admin.png)
 
----
-
 ## 📊 Attendance Analytics
 ![Attendance Analytics](screenshots/analytics.png)
-
----
 
 ## 💰 Payroll Management
 ![Payroll Management](screenshots/payroll.png)
@@ -67,7 +59,7 @@ This project combines **web development and data analytics** to transform raw at
 | MySQL | Database |
 | HTML / CSS / Jinja2 | Frontend templates |
 | Matplotlib | Data visualization |
-| JavaScript | Dynamic components |
+| JavaScript | Dynamic UI |
 
 ---
 
@@ -85,7 +77,7 @@ The system uses the following MySQL tables:
 
 # ⚙ Installation
 
-### 1️⃣ Clone Repository
+## 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/employee-attendance-payroll-system.git
