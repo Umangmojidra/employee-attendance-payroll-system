@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard — EAP{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Welcome, {{ session.name.split()[0] }}</h1>
+  <p class="sub">Employee #{{ session.user }} &bull; {{ emp.e_name }} &bull; {{ emp.dep_name or 'No Dept' }} &bull; {{ today.strftime('%A, %d %B %Y') }}</p></div>
+</div>
+<div class="kpi-row">
+  <div class="kpi kpi-green"><div class="kpi-val">{{ present_count }}</div><div class="kpi-lbl">Days Present</div></div>
+  <div class="kpi kpi-red"><div class="kpi-val">{{ absent_count }}</div><div class="kpi-lbl">Days Absent</div></div>
+  <div class="kpi kpi-blue"><div class="kpi-val">{{ att_rate }}%</div><div class="kpi-lbl">Attendance Rate</div></div>
+  <div class="kpi kpi-amber"><div class="kpi-val">{{ total_count }}</div><div class="kpi-lbl">Total Recorded</div></div>
+</div>
+<div class="two-col">
+  <div class="panel">
+    <div class="panel-head"><h2>Today's Attendance</h2><span class="chip chip-date">{{ today }}</span></div>
+    {% if today_att %}
+    <div class="att-done">
+      <div class="att-icon att-ok">&#10003;</div>
+      <h3>Attendance Marked</h3>
+      <p>Status: <strong>{{ today_att.status.replace('_',' ') }}</strong></p>
+      <p>Login time: <span class="mono">{{ today_att.login_time }}</span></p>
+      {% if today_att.penalty %}<span class="chip chip-red" style="margin-top:.5rem">Late Penalty Applied</span>{% endif %}
+    </div>
+    {% else %}
+    <div class="att-form">
+      <div class="att-icon att-warn">!</div>
+      <p class="att-prompt">Mark your attendance for today</p>
+      <form method="POST" action="{{ url_for('mark_attendance') }}" class="mark-form">
+        <div class="field">
+          <label>Department</label>
+          <select name="dep_id">
+            {% for d in departments %}<option value="{{ d.dep_id }}" {% if d.dep_id == emp.dep_id %}selected{% endif %}>{{ d.dep_name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select name="status">
+            <option value="Present">Present</option>
+            <option value="Work_from_home">Work from Home</option>
+            <option value="Half_Day">Half Day</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;margin-top:.5rem">Mark Attendance</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Last 10 Days</h2></div>
+    {% if last10 %}
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Status</th><th>Login Time</th><th>Penalty</th><th>OT</th></tr></thead>
+        <tbody>
+          {% for r in last10 %}
+          <tr>
+            <td class="mono">{{ r.login_date }}</td>
+            <td><span class="chip {% if r.status=='Present' %}chip-green{% elif r.status=='Absent' %}chip-red{% elif r.status=='Half_Day' %}chip-amber{% else %}chip-blue{% endif %}">{{ r.status.replace('_',' ') }}</span></td>
+            <td class="mono">{{ r.login_time }}</td>
+            <td>{% if r.penalty %}<span class="chip chip-red">Yes</span>{% else %}&mdash;{% endif %}</td>
+            <td class="mono">{{ r.overtime or 0 }} hr</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}<div class="empty">No attendance records yet.</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

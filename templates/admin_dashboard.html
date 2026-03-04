@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — EAP{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Admin Dashboard</h1><p class="sub">{{ today.strftime('%A, %d %B %Y') }}</p></div>
+  <span class="live-pill">&#9679; LIVE</span>
+</div>
+<div class="kpi-row">
+  <div class="kpi kpi-blue"><div class="kpi-val">{{ total_emp }}</div><div class="kpi-lbl">Total Employees</div></div>
+  <div class="kpi kpi-green"><div class="kpi-val">{{ present_today }}</div><div class="kpi-lbl">Present Today</div></div>
+  <div class="kpi kpi-red"><div class="kpi-val">{{ absent_today }}</div><div class="kpi-lbl">Absent / Not Marked</div></div>
+  <div class="kpi kpi-amber"><div class="kpi-val">{{ rate }}%</div><div class="kpi-lbl">Attendance Rate</div></div>
+</div>
+
+<div class="sec-label">Analytics Dashboards</div>
+<div class="acard-grid">
+  <a href="{{ url_for('analytics_attendance') }}" class="acard acard-blue"><div class="acard-ico">A</div><div><strong>Attendance</strong><small>30-day trends &amp; distribution</small></div></a>
+  <a href="{{ url_for('analytics_payroll') }}" class="acard acard-green"><div class="acard-ico">P</div><div><strong>Payroll</strong><small>Department pay &amp; top earners</small></div></a>
+  <a href="{{ url_for('analytics_department') }}" class="acard acard-amber"><div class="acard-ico">D</div><div><strong>Departments</strong><small>Headcount, salary, penalties</small></div></a>
+  <a href="{{ url_for('analytics_performance') }}" class="acard acard-purple"><div class="acard-ico">E</div><div><strong>Performance</strong><small>Top attendees &amp; late arrivals</small></div></a>
+</div>
+
+<div class="two-col" style="margin-top:1.5rem">
+  <div class="panel">
+    <div class="panel-head"><h2>Today's Check-ins</h2><span class="chip chip-green">{{ today_list|length }}</span></div>
+    {% if today_list %}
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Employee</th><th>Dept</th><th>Status</th><th>Login</th><th>Penalty</th></tr></thead>
+        <tbody>
+          {% for r in today_list %}
+          <tr>
+            <td><strong>{{ r.e_name }}</strong><br><span class="mono" style="font-size:.72rem;color:var(--muted)">ID: {{ r.e_id }}</span></td>
+            <td>{{ r.dep_name or '-' }}</td>
+            <td><span class="chip {% if r.status=='Present' %}chip-green{% elif r.status=='Absent' %}chip-red{% elif r.status=='Half_Day' %}chip-amber{% else %}chip-blue{% endif %}">{{ r.status.replace('_',' ') }}</span></td>
+            <td class="mono">{{ r.login_time }}</td>
+            <td>{% if r.penalty %}<span class="chip chip-red">Late</span>{% else %}&mdash;{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}<div class="empty">No check-ins yet today.</div>{% endif %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Not Marked Today</h2><span class="chip chip-red">{{ not_marked|length }}</span></div>
+    {% if not_marked %}
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>ID</th><th>Name</th></tr></thead>
+        <tbody>{% for r in not_marked %}<tr><td class="mono">{{ r.e_id }}</td><td>{{ r.e_name }}</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+    {% else %}<div class="empty all-good">&#10003; All employees marked attendance!</div>{% endif %}
+
+    <div class="trend-block">
+      <div class="sec-label" style="margin:1.25rem 0 .5rem">7-Day Trend</div>
+      <div class="bar-row">
+        {% for d in trend %}
+        <div class="bar-col">
+          <div class="bar-out"><div class="bar-fill" style="height:{{ ((d.present/total_emp*100)|int) if total_emp else 0 }}%"></div></div>
+          <div class="bar-dt">{{ d.date }}</div>
+          <div class="bar-n">{{ d.present }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

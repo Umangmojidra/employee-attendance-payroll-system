@@ -1,7 +1,0 @@
-e_id,e_name,dep_id,full_days,half_days,wfh_days,absents,total_working_days,attendance_percentage
-202501007,manoj,5,0,1,0,0,30,1.67
-202501003,Biswajit,4,10,6,6,8,30,63.33
-202501002,sai,2,10,5,7,8,30,65.00
-202501006,rohit,1,7,9,9,5,30,68.33
-202501004,reddy,3,13,4,6,7,30,70.00
-202501005,divya,5,14,8,3,5,30,70.00

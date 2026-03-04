@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Employees — EAP{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Employees</h1><p class="sub">{{ employees|length }} registered</p></div>
+  <button class="btn-primary" onclick="tog('add-frm')">+ Add Employee</button>
+</div>
+<div id="add-frm" class="panel" style="display:none;margin-bottom:1.5rem">
+  <div class="panel-head"><h2>Add New Employee</h2></div>
+  <form method="POST" class="grid-form">
+    <input type="hidden" name="action" value="add">
+    <div class="field"><label>Full Name *</label><input type="text" name="e_name" required></div>
+    <div class="field"><label>Department</label><select name="dep_id"><option value="">— Select —</option>{% for d in departments %}<option value="{{ d.dep_id }}">{{ d.dep_name }}</option>{% endfor %}</select></div>
+    <div class="field"><label>City</label><input type="text" name="city"></div>
+    <div class="field"><label>Mobile</label><input type="number" name="mobile"></div>
+    <div class="field"><label>Email</label><input type="email" name="email"></div>
+    <div class="field"><label>Blood Group</label><input type="text" name="blood_group" placeholder="O+"></div>
+    <div class="field"><label>Salary (Rs.)</label><input type="number" step="0.01" name="salary"></div>
+    <div class="field" style="align-self:flex-end"><button type="submit" class="btn-primary">Add Employee</button></div>
+  </form>
+</div>
+<div class="panel">
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>ID</th><th>Name</th><th>Dept</th><th>City</th><th>Mobile</th><th>Blood</th><th>Salary</th><th>Joined</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for e in employees %}
+        <tr>
+          <td class="mono">{{ e.e_id }}</td>
+          <td><strong>{{ e.e_name }}</strong></td>
+          <td>{{ e.dep_name or '—' }}</td>
+          <td>{{ e.city or '—' }}</td>
+          <td class="mono">{{ e.mobile or '—' }}</td>
+          <td>{{ e.blood_group or '—' }}</td>
+          <td class="mono">Rs.{{ "%.2f"|format(e.salary) if e.salary else '—' }}</td>
+          <td class="mono">{{ e.joining_date or '—' }}</td>
+          <td class="action-cell">
+            <button class="btn-sm btn-edit" onclick="openEdit({{ e.e_id }},'{{ e.e_name }}',{{ e.dep_id or 'null' }},'{{ e.city or '' }}','{{ e.mobile or '' }}','{{ e.email or '' }}','{{ e.blood_group or '' }}',{{ e.salary or 0 }})">Edit</button>
+            <form method="POST" style="display:inline" onsubmit="return confirm('Delete employee {{ e.e_name }}?')">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="e_id" value="{{ e.e_id }}">
+              <button type="submit" class="btn-sm btn-del">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div id="edit-modal" class="modal-ov" style="display:none">
+  <div class="modal">
+    <div class="modal-head"><h2>Edit Employee</h2><button onclick="closeEdit()">&#x2715;</button></div>
+    <form method="POST" class="grid-form">
+      <input type="hidden" name="action" value="update">
+      <input type="hidden" name="e_id" id="eid">
+      <div class="field"><label>Full Name *</label><input type="text" name="e_name" id="ename" required></div>
+      <div class="field"><label>Department</label><select name="dep_id" id="edep"><option value="">— Select —</option>{% for d in departments %}<option value="{{ d.dep_id }}">{{ d.dep_name }}</option>{% endfor %}</select></div>
+      <div class="field"><label>City</label><input type="text" name="city" id="ecity"></div>
+      <div class="field"><label>Mobile</label><input type="number" name="mobile" id="emob"></div>
+      <div class="field"><label>Email</label><input type="email" name="email" id="eemail"></div>
+      <div class="field"><label>Blood Group</label><input type="text" name="blood_group" id="eblood"></div>
+      <div class="field"><label>Salary (Rs.)</label><input type="number" step="0.01" name="salary" id="esal"></div>
+      <div class="field" style="align-self:flex-end"><button type="submit" class="btn-primary">Save Changes</button></div>
+    </form>
+  </div>
+</div>
+<script>
+function tog(id){var e=document.getElementById(id);e.style.display=e.style.display==='none'?'block':'none';}
+function openEdit(id,n,dep,city,mob,email,blood,sal){
+  document.getElementById('eid').value=id; document.getElementById('ename').value=n;
+  document.getElementById('edep').value=dep||''; document.getElementById('ecity').value=city;
+  document.getElementById('emob').value=mob; document.getElementById('eemail').value=email;
+  document.getElementById('eblood').value=blood; document.getElementById('esal').value=sal;
+  document.getElementById('edit-modal').style.display='flex';
+}
+function closeEdit(){document.getElementById('edit-modal').style.display='none';}
+</script>
+{% endblock %}

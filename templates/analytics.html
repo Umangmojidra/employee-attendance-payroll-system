@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — EAP{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{{ title }}</h1><p class="sub">Generated {{ now.strftime('%d %b %Y %H:%M') }}</p></div>
+  <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">&larr; Back</a>
+</div>
+<div class="a-switcher">
+  <a href="{{ url_for('analytics_attendance') }}"  class="asw {% if active=='attendance'  %}asw-on{% endif %}">Attendance</a>
+  <a href="{{ url_for('analytics_payroll') }}"     class="asw {% if active=='payroll'     %}asw-on{% endif %}">Payroll</a>
+  <a href="{{ url_for('analytics_department') }}"  class="asw {% if active=='department'  %}asw-on{% endif %}">Departments</a>
+  <a href="{{ url_for('analytics_performance') }}" class="asw {% if active=='performance' %}asw-on{% endif %}">Performance</a>
+</div>
+<div class="panel" style="padding:1rem">
+  <img src="data:image/png;base64,{{ chart }}" class="chart-img" alt="{{ title }}">
+</div>
+{% endblock %}

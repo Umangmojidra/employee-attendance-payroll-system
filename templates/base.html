@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% block title %}EAP{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+<body>
+{% if session.user %}
+<nav class="navbar">
+  <a href="{{ url_for('admin_dashboard') if session.role=='manager' else url_for('employee_dashboard') }}" class="nav-brand">
+    <div class="brand-mark">EAP</div>
+    <div><div class="brand-name">EAP System</div><div class="brand-sub">Employee & Attendance Portal</div></div>
+  </a>
+  <div class="nav-center">
+    {% if session.role == 'manager' %}
+      <a href="{{ url_for('admin_dashboard') }}"  class="nav-link {% if request.endpoint=='admin_dashboard'  %}active{% endif %}">Dashboard</a>
+      <a href="{{ url_for('admin_employees') }}"  class="nav-link {% if request.endpoint=='admin_employees'  %}active{% endif %}">Employees</a>
+      <a href="{{ url_for('admin_attendance') }}" class="nav-link {% if request.endpoint=='admin_attendance' %}active{% endif %}">Attendance</a>
+      <a href="{{ url_for('admin_payroll') }}"    class="nav-link {% if request.endpoint=='admin_payroll'    %}active{% endif %}">Payroll</a>
+      <div class="nav-dropdown">
+        <span class="nav-link {% if 'analytics' in request.endpoint %}active{% endif %}">Analytics &#9660;</span>
+        <div class="dropdown-panel">
+          <a href="{{ url_for('analytics_attendance') }}"><div class="di">A</div>Attendance</a>
+          <a href="{{ url_for('analytics_payroll') }}"><div class="di">P</div>Payroll</a>
+          <a href="{{ url_for('analytics_department') }}"><div class="di">D</div>Departments</a>
+          <a href="{{ url_for('analytics_performance') }}"><div class="di">E</div>Performance</a>
+        </div>
+      </div>
+    {% else %}
+      <a href="{{ url_for('employee_dashboard') }}" class="nav-link active">My Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <div class="nav-user">
+      <div class="user-av">{{ session.name[0] }}</div>
+      <div><div class="user-name">{{ session.name }}</div><div class="user-role">{{ 'Manager' if session.role=='manager' else 'Employee' }}</div></div>
+    </div>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Sign out</a>
+  </div>
+</nav>
+{% endif %}
+<main class="content">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="toast toast-{{ cat }}"><span>{{ msg }}</span><button onclick="this.parentElement.remove()">&#x2715;</button></div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<script src="{{ url_for('static',filename='js/main.js') }}"></script>
+</body>
+</html>

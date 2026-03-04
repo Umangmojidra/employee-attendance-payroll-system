@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Monitor — EAP{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Attendance Monitor</h1></div>
+<div class="panel" style="margin-bottom:1.5rem">
+  <form method="GET" class="filter-row">
+    <div class="field"><label>Date</label><input type="date" name="date" value="{{ filter_date }}"></div>
+    <div class="field"><label>Employee Name</label><input type="text" name="name" value="{{ filter_name }}" placeholder="Search..."></div>
+    <div class="field"><label>Department</label><select name="dep_id"><option value="">All Depts</option>{% for d in departments %}<option value="{{ d.dep_id }}" {% if filter_dept==d.dep_id|string %}selected{% endif %}>{{ d.dep_name }}</option>{% endfor %}</select></div>
+    <div class="field" style="align-self:flex-end;flex-direction:row;gap:.5rem">
+      <button type="submit" class="btn-primary">Filter</button>
+      <a href="{{ url_for('admin_attendance') }}" class="btn-outline">Reset</a>
+    </div>
+  </form>
+</div>
+<div class="two-col">
+  <div class="panel">
+    <div class="panel-head"><h2>Marked Records</h2><span class="chip chip-green">{{ records|length }}</span></div>
+    {% if records %}
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Employee</th><th>Dept</th><th>Status</th><th>Login</th><th>Penalty</th><th>OT</th></tr></thead>
+        <tbody>
+          {% for r in records %}
+          <tr>
+            <td><strong>{{ r.e_name }}</strong></td>
+            <td>{{ r.dep_name or '—' }}</td>
+            <td><span class="chip {% if r.status=='Present' %}chip-green{% elif r.status=='Absent' %}chip-red{% elif r.status=='Half_Day' %}chip-amber{% else %}chip-blue{% endif %}">{{ r.status.replace('_',' ') }}</span></td>
+            <td class="mono">{{ r.login_time }}</td>
+            <td>{% if r.penalty %}<span class="chip chip-red">Late</span>{% else %}&mdash;{% endif %}</td>
+            <td class="mono">{{ r.overtime or 0 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}<div class="empty">No records for this date.</div>{% endif %}
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Not Yet Marked</h2><span class="chip chip-red">{{ not_marked|length }}</span></div>
+    {% if not_marked %}
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>ID</th><th>Name</th><th>Dept</th></tr></thead>
+        <tbody>{% for e in not_marked %}<tr><td class="mono">{{ e.e_id }}</td><td>{{ e.e_name }}</td><td>{{ e.dep_name or '—' }}</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+    {% else %}<div class="empty all-good">&#10003; All employees marked attendance!</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

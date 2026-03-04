@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Payroll — EAP{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Payroll Management</h1></div>
+  <button class="btn-primary" onclick="tog('pay-frm')">+ Generate Payroll</button>
+</div>
+<div id="pay-frm" class="panel" style="display:none;margin-bottom:1.5rem">
+  <div class="panel-head"><h2>Generate Payroll</h2></div>
+  <form method="POST" class="grid-form">
+    <div class="field"><label>Employee</label><select name="e_id">{% for e in employees %}<option value="{{ e.e_id }}">{{ e.e_name }} (ID:{{ e.e_id }})</option>{% endfor %}</select></div>
+    <div class="field"><label>Department</label><select name="dep_id">{% for d in departments %}<option value="{{ d.dep_id }}">{{ d.dep_name }}</option>{% endfor %}</select></div>
+    <div class="field"><label>Performance Bonus (Rs.)</label><input type="number" step="1" name="per_bonus" value="0"></div>
+    <div class="field"><label>Provident Fund (Rs.)</label><input type="number" step="0.01" name="pro_fund" value="0"></div>
+    <div class="field"><label>Tax (%)</label><input type="number" step="0.01" name="tax" value="10"></div>
+    <div class="field" style="align-self:flex-end"><button type="submit" class="btn-primary">Generate</button></div>
+  </form>
+</div>
+<div class="panel">
+  <div class="panel-head"><h2>Payroll Records</h2></div>
+  {% if payrolls %}
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Employee</th><th>Dept</th><th>Month</th><th>Full Days</th><th>Net Pay</th><th>Bonus</th><th>Tax</th><th>PF</th><th>Slip</th></tr></thead>
+      <tbody>
+        {% for p in payrolls %}
+        <tr>
+          <td><strong>{{ p.e_name }}</strong></td><td>{{ p.dep_name or '—' }}</td>
+          <td class="mono">{{ p.month }}/2025</td><td class="mono">{{ p.full_days }}</td>
+          <td class="mono"><strong>Rs.{{ "%.2f"|format(p.pro_rated_sal) }}</strong></td>
+          <td class="mono">Rs.{{ p.per_bonus or 0 }}</td>
+          <td class="mono">Rs.{{ "%.2f"|format(p.tax_amount) }}</td>
+          <td class="mono">Rs.{{ "%.2f"|format(p.pro_fund) }}</td>
+          <td><a href="{{ url_for('payment_slip',e_id=p.e_id) }}" class="btn-sm btn-edit">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<div class="empty">No payroll records yet. Generate one above.</div>{% endif %}
+</div>
+<script>function tog(id){var e=document.getElementById(id);e.style.display=e.style.display==='none'?'block':'none';}</script>
+{% endblock %}
