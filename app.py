@@ -12,14 +12,21 @@ import mysql.connector
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'eap_secret_xK9_2024'
+app.secret_key = os.environ.get('SECRET_KEY', 'eap_secret_xK9_2024')
 
 # ── DB ─────────────────────────────────────────────────────────
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="root", password="root", database="eap"
+        host=os.environ.get('MYSQL_HOST', 'localhost'),
+        user=os.environ.get('MYSQL_USER', 'root'),
+        password=os.environ.get('MYSQL_PASSWORD', 'root'),
+        database=os.environ.get('MYSQL_DB', 'eap'),
+        port=int(os.environ.get('MYSQL_PORT', 3306))
     )
 
 # ── DECORATORS ─────────────────────────────────────────────────

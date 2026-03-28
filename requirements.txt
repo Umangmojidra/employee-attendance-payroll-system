@@ -3,3 +3,5 @@ mysql-connector-python
 matplotlib
 pandas
 tabulate
+gunicorn
+python-dotenv
