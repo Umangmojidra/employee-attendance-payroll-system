@@ -26,7 +26,8 @@ def get_db():
         user=os.environ.get('MYSQL_USER', 'root'),
         password=os.environ.get('MYSQL_PASSWORD', 'root'),
         database=os.environ.get('MYSQL_DB', 'eap'),
-        port=int(os.environ.get('MYSQL_PORT', 3306))
+        port=int(os.environ.get('MYSQL_PORT', 3306)),
+        ssl_disabled=False   # 👈 required for TiDB
     )
 
 # ── DECORATORS ─────────────────────────────────────────────────
